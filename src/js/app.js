@@ -6,7 +6,8 @@ class DrawingApp {
     constructor() {
         this.canvas = document.getElementById('drawingCanvas');
         this.ctx = this.canvas.getContext('2d');
-        this.recognizer = new KanjiRecognizer();
+        this.recognizers = {};
+        this.currentAlgorithm = 'dtw';
         this.visualizer = new RecognitionVisualizer();
         
         // 描画状態
@@ -22,6 +23,7 @@ class DrawingApp {
         this.resultsContainer = document.getElementById('results');
         this.loadingEl = document.getElementById('loading');
         this.realtimeCheck = document.getElementById('realtimeCheck');
+        this.algorithmSelect = document.getElementById('algorithmSelect');
         this.resultCountSelect = document.getElementById('resultCount');
         
         this.init();
@@ -34,15 +36,41 @@ class DrawingApp {
         // データ読み込み
         try {
             this.showLoading(true);
-            await this.recognizer.load();
+            
+            // DTW（ベース）
+            const dtw = new KanjiRecognizer();
+            await dtw.load();
+            this.recognizers['dtw'] = dtw;
+            
+            // $N Multistroke
+            const nStroke = new NMultistrokeRecognizer();
+            nStroke.loadFromTomoe(dtw.characters);
+            this.recognizers['nstroke'] = nStroke;
+            
+            // Shape Context
+            const shapeContext = new ShapeContextRecognizer();
+            shapeContext.loadFromTomoe(dtw.characters);
+            this.recognizers['shapecontext'] = shapeContext;
+            
+            // Ensemble
+            const ensemble = new EnsembleRecognizer();
+            await ensemble.load();
+            this.recognizers['ensemble'] = ensemble;
+            
             this.showLoading(false);
             
-            const stats = this.recognizer.getStats();
-            console.log('Recognizer stats:', stats);
+            console.log('Loaded recognizers:', Object.keys(this.recognizers));
+            console.log('DTW stats:', dtw.getStats());
+            console.log('$N-Multistroke stats:', nStroke.getStats());
+            console.log('ShapeContext stats:', shapeContext.getStats());
         } catch (error) {
             console.error('Failed to initialize:', error);
             this.showError('データの読み込みに失敗しました。ページを更新してください。');
         }
+    }
+
+    getCurrentRecognizer() {
+        return this.recognizers[this.currentAlgorithm] || this.recognizers['dtw'];
     }
 
     setupCanvas() {
@@ -95,6 +123,14 @@ class DrawingApp {
         this.realtimeCheck.addEventListener('change', () => {
             if (this.realtimeCheck.checked && this.strokes.length > 0) {
                 this.recognize();
+            }
+        });
+        
+        this.algorithmSelect.addEventListener('change', (e) => {
+            this.currentAlgorithm = e.target.value;
+            console.log('Algorithm changed to:', this.currentAlgorithm);
+            if (this.strokes.length > 0) {
+                this.recognize(this.realtimeCheck.checked);
             }
         });
     }
@@ -221,7 +257,13 @@ class DrawingApp {
         await new Promise(resolve => setTimeout(resolve, isRealtime ? 10 : 50));
         
         try {
-            const results = this.recognizer.recognize(this.strokes, topK);
+            const recognizer = this.getCurrentRecognizer();
+            const startTime = performance.now();
+            const results = recognizer.recognize(this.strokes, topK);
+            const endTime = performance.now();
+            
+            console.log(`${this.currentAlgorithm}: ${(endTime - startTime).toFixed(2)}ms, top-1: ${results[0]?.char}`);
+            
             this.lastResult = results;
             
             if (isRealtime && results.length > 0) {

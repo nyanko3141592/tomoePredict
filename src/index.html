@@ -33,6 +33,15 @@
                         リアルタイム認識
                     </label>
                     <label>
+                        アルゴリズム:
+                        <select id="algorithmSelect">
+                            <option value="dtw">DTW (標準)</option>
+                            <option value="nstroke">$N-Multistroke (高速)</option>
+                            <option value="shapecontext">Shape Context (形状重視)</option>
+                            <option value="ensemble">Ensemble (統合)</option>
+                        </select>
+                    </label>
+                    <label>
                         表示件数:
                         <select id="resultCount">
                             <option value="5">5件</option>
@@ -68,6 +77,8 @@
 
     <script src="js/dtw.js"></script>
     <script src="js/recognizer.js"></script>
+    <script src="js/n-multistroke.js"></script>
+    <script src="js/shape-context.js"></script>
     <script src="js/visualizer.js"></script>
     <script src="js/app.js"></script>
 </body>
