@@ -1,0 +1,23 @@
+{
+  "name": "tomoe-kanji-recognizer",
+  "version": "1.0.0",
+  "description": "手書き漢字認識デモ - tomoe_dataを使用したブラウザベース文字認識",
+  "scripts": {
+    "setup": "git clone --depth 1 https://github.com/hiroyuki-komatsu/tomoe_data.git temp_tomoe_data && python3 scripts/convert_data.py && rm -rf temp_tomoe_data",
+    "build": "npm run setup",
+    "dev": "./dev.sh",
+    "preview": "npx wrangler pages dev src"
+  },
+  "keywords": [
+    "kanji",
+    "handwriting-recognition",
+    "dtw",
+    "tomoe",
+    "japanese"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

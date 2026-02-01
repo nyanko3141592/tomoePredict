@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Temporary data
+temp_tomoe_data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Article (not for commit)
+article.md
+
+# Local env
+.env
+.env.local

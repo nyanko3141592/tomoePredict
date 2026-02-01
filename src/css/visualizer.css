@@ -1,0 +1,455 @@
+/* =============================================
+   認識プロセス可視化スタイル
+   ============================================= */
+
+.visualization-section {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #bae6fd;
+}
+
+/* リアルタイムプレビュー */
+.realtime-preview {
+    animation: slideDown 0.3s ease;
+}
+
+.realtime-preview h3 {
+    font-size: 1rem;
+    color: #0369a1;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.candidate-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.candidate-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideInRight 0.4s ease backwards;
+    animation-delay: var(--delay, 0s);
+}
+
+.candidate-char {
+    font-size: 1.5rem;
+    width: 40px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.score-bar-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.score-bar {
+    height: 24px;
+    background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+    border-radius: 12px;
+    transition: width 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.score-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.score-label {
+    font-size: 0.85rem;
+    color: #0369a1;
+    font-weight: 500;
+    min-width: 45px;
+}
+
+.stroke-indicator {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #7dd3fc;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.stroke-count {
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.hint {
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.hint.more {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.hint.less {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.hint.perfect {
+    background: #d1fae5;
+    color: #065f46;
+    animation: pulse 1s ease infinite;
+}
+
+/* 詳細マッチング */
+.detailed-match {
+    animation: fadeIn 0.4s ease;
+}
+
+.detailed-match h3 {
+    font-size: 1.1rem;
+    color: #1e293b;
+    margin-bottom: 16px;
+}
+
+.detailed-match h4 {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.input-preview, .template-preview {
+    text-align: center;
+}
+
+.input-preview canvas, .template-preview canvas {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stroke-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.stroke-match-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #e2e8f0;
+}
+
+.stroke-match-item.good {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+}
+
+.stroke-match-item.medium {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.stroke-match-item.poor {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+}
+
+.stroke-num {
+    font-size: 0.8rem;
+    color: #64748b;
+    width: 50px;
+}
+
+.match-bar {
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.match-fill {
+    height: 100%;
+    width: calc(var(--match) * 100%);
+    background: linear-gradient(90deg, #3b82f6, #06b6d4);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.match-score {
+    font-size: 0.8rem;
+    color: #475569;
+    min-width: 40px;
+    text-align: right;
+}
+
+.score-breakdown {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.breakdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.breakdown-item.has-penalty {
+    background: #fef2f2;
+}
+
+.breakdown-item .label {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.breakdown-item .value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.breakdown-item.has-penalty .value {
+    color: #dc2626;
+}
+
+/* ヒートマップ */
+.similarity-heatmap {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.similarity-heatmap h3 {
+    font-size: 1rem;
+    color: #1e293b;
+    margin-bottom: 12px;
+}
+
+.heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.heatmap-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: hsl(var(--hue), 70%, 90%);
+    border: 2px solid hsl(var(--hue), 70%, 70%);
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.1);
+}
+
+.heatmap-char {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: hsl(var(--hue), 80%, 30%);
+}
+
+.heatmap-score {
+    font-size: 0.7rem;
+    color: hsl(var(--hue), 60%, 40%);
+}
+
+/* プロセスアニメーション */
+.process-animation {
+    animation: fadeIn 0.3s ease;
+}
+
+.process-animation h3 {
+    font-size: 1rem;
+    color: #1e293b;
+    margin-bottom: 16px;
+}
+
+.process-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    min-width: 80px;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.step.active {
+    opacity: 1;
+    background: #dbeafe;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.step-icon {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+}
+
+.step-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.step-detail {
+    font-size: 0.65rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.step-arrow {
+    font-size: 1.2rem;
+    color: #94a3b8;
+}
+
+/* アニメーション */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 詳細ビュー用スタイル */
+.result-item {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.result-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.result-item::after {
+    content: '👆';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.result-item:hover::after {
+    opacity: 0.5;
+}
+
+/* レスポンシブ */
+@media (max-width: 600px) {
+    .match-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .breakdown-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .heatmap-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .process-steps {
+        gap: 4px;
+    }
+    
+    .step {
+        min-width: 60px;
+        padding: 8px;
+    }
+    
+    .step-arrow {
+        display: none;
+    }
+}

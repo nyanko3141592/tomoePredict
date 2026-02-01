@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tomoe 手書き漢字認識デモ</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/visualizer.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🖌️ Tomoe 手書き漢字認識デモ</h1>
+            <p>Canvasに漢字を書くと、似た文字を推定して表示します</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <div class="canvas-container">
+                    <canvas id="drawingCanvas" width="300" height="300"></canvas>
+                    <div class="canvas-hint">ここに文字を書いてください</div>
+                </div>
+                
+                <div class="controls">
+                    <button id="undoBtn" class="btn btn-secondary" disabled>↩️ 元に戻す</button>
+                    <button id="clearBtn" class="btn btn-danger">🗑️ クリア</button>
+                    <button id="recognizeBtn" class="btn btn-primary">🔍 認識</button>
+                </div>
+
+                <div class="options">
+                    <label>
+                        <input type="checkbox" id="realtimeCheck" checked>
+                        リアルタイム認識
+                    </label>
+                    <label>
+                        表示件数:
+                        <select id="resultCount">
+                            <option value="5">5件</option>
+                            <option value="10" selected>10件</option>
+                            <option value="20">20件</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h2>認識結果</h2>
+                <div id="results" class="results-grid">
+                    <div class="result-placeholder">
+                        文字を書いて「認識」ボタンを押してください
+                    </div>
+                </div>
+                
+                <div id="loading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>認識中...</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>
+                データ: <a href="https://github.com/hiroyuki-komatsu/tomoe_data" target="_blank">tomoe_data</a> by Hiroyuki Komatsu<br>
+                使用アルゴリズム: DTW (Dynamic Time Warping)
+            </p>
+        </footer>
+    </div>
+
+    <script src="js/dtw.js"></script>
+    <script src="js/recognizer.js"></script>
+    <script src="js/visualizer.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
