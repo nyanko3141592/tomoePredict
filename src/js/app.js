@@ -23,8 +23,12 @@ class DrawingApp {
         this.resultsContainer = document.getElementById('results');
         this.loadingEl = document.getElementById('loading');
         this.realtimeCheck = document.getElementById('realtimeCheck');
+        this.compareModeCheck = document.getElementById('compareModeCheck');
         this.algorithmSelect = document.getElementById('algorithmSelect');
         this.resultCountSelect = document.getElementById('resultCount');
+        
+        // 比較ビュー
+        this.comparisonView = new ComparisonView('comparison-view');
         
         this.init();
     }
@@ -133,6 +137,13 @@ class DrawingApp {
                 this.recognize(this.realtimeCheck.checked);
             }
         });
+        
+        this.compareModeCheck.addEventListener('change', (e) => {
+            console.log('Compare mode:', e.target.checked ? 'ON' : 'OFF');
+            if (this.strokes.length > 0) {
+                this.recognize(this.realtimeCheck.checked);
+            }
+        });
     }
 
     getCanvasCoordinates(event) {
@@ -213,6 +224,7 @@ class DrawingApp {
         this.undoBtn.disabled = true;
         this.canvas.classList.remove('drawing');
         this.visualizer.clear();
+        this.comparisonView.clear();
         this.showPlaceholder();
     }
 
@@ -243,6 +255,7 @@ class DrawingApp {
         }
         
         const topK = parseInt(this.resultCountSelect.value);
+        const isCompareMode = this.compareModeCheck.checked;
         
         if (!isRealtime) {
             this.showLoading(true);
@@ -257,24 +270,13 @@ class DrawingApp {
         await new Promise(resolve => setTimeout(resolve, isRealtime ? 10 : 50));
         
         try {
-            const recognizer = this.getCurrentRecognizer();
-            const startTime = performance.now();
-            const results = recognizer.recognize(this.strokes, topK);
-            const endTime = performance.now();
-            
-            console.log(`${this.currentAlgorithm}: ${(endTime - startTime).toFixed(2)}ms, top-1: ${results[0]?.char}`);
-            
-            this.lastResult = results;
-            
-            if (isRealtime && results.length > 0) {
-                // リアルタイムプレビュー
-                this.visualizer.showRealtimePreview(this.strokes, results);
+            if (isCompareMode) {
+                // 比較モード: 全手法を実行
+                await this.recognizeAll(topK, isRealtime);
             } else {
-                // 詳細結果表示
-                this.visualizer.clear();
+                // 単一モード
+                await this.recognizeSingle(topK, isRealtime);
             }
-            
-            this.displayResults(results, isRealtime);
         } catch (error) {
             console.error('Recognition error:', error);
             this.showError('認識中にエラーが発生しました。');
@@ -283,6 +285,55 @@ class DrawingApp {
                 this.showLoading(false);
             }
         }
+    }
+
+    async recognizeSingle(topK, isRealtime) {
+        const recognizer = this.getCurrentRecognizer();
+        const startTime = performance.now();
+        const results = recognizer.recognize(this.strokes, topK);
+        const endTime = performance.now();
+        
+        console.log(`${this.currentAlgorithm}: ${(endTime - startTime).toFixed(2)}ms, top-1: ${results[0]?.char}`);
+        
+        this.lastResult = results;
+        
+        if (isRealtime && results.length > 0) {
+            this.visualizer.showRealtimePreview(this.strokes, results);
+        } else {
+            this.visualizer.clear();
+            this.comparisonView.clear();
+        }
+        
+        this.displayResults(results, isRealtime);
+    }
+
+    async recognizeAll(topK, isRealtime) {
+        const algorithms = ['dtw', 'nstroke', 'shapecontext', 'ensemble'];
+        const results = {};
+        
+        // 全手法を並列実行
+        for (const algo of algorithms) {
+            const recognizer = this.recognizers[algo];
+            if (!recognizer) continue;
+            
+            const startTime = performance.now();
+            const algoResults = recognizer.recognize(this.strokes, topK);
+            const endTime = performance.now();
+            
+            results[algo] = {
+                results: algoResults,
+                time: endTime - startTime
+            };
+            
+            console.log(`${algo}: ${results[algo].time.toFixed(2)}ms, top-1: ${algoResults[0]?.char}`);
+        }
+        
+        // 比較ビューに表示
+        this.comparisonView.showComparison(this.strokes, results);
+        
+        // 選択中のアルゴリズムの結果をメイン表示
+        const mainResults = results[this.currentAlgorithm]?.results || [];
+        this.displayResults(mainResults, isRealtime);
     }
 
     displayResults(results, isRealtime = false) {
