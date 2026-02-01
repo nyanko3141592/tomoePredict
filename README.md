@@ -1,12 +1,12 @@
 # 🖌️ Tomoe 手書き漢字認識デモ
 
-[![Deploy to GitHub Pages](https://github.com/hiroyuki-komatsu/tomoe_data/actions/workflows/deploy.yml/badge.svg)](https://github.com/hiroyuki-komatsu/tomoe_data/actions/workflows/deploy.yml)
+[![Deploy to GitHub Pages](https://github.com/nyanko3141592/tomoePredict/actions/workflows/deploy.yml/badge.svg)](https://github.com/nyanko3141592/tomoePredict/actions/workflows/deploy.yml)
 
 ブラウザ上で動作する手書き漢字認識デモアプリです。[tomoe_data](https://github.com/hiroyuki-komatsu/tomoe_data)を使用し、DTW（Dynamic Time Warping）アルゴリズムで文字の類似度を計算します。
 
-**🌐 ライブデモ**: `https://<your-username>.github.io/tomoePredict/`
+**🌐 ライブデモ**: https://nyanko3141592.github.io/tomoePredict
 
-![Demo Screenshot](https://user-images.githubusercontent.com/placeholder/screenshot.png)
+![Demo Screenshot](./screenshot.png)
 
 ## 🌟 特徴
 
@@ -23,7 +23,7 @@
 
 GitHub Pagesでホスティング中:
 
-🔗 **`https://<your-username>.github.io/tomoePredict/`**
+🔗 **https://nyanko3141592.github.io/tomoePredict**
 
 ### ローカルで実行
 

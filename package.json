@@ -17,6 +17,11 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nyanko3141592/tomoePredict.git"
+  },
+  "homepage": "https://nyanko3141592.github.io/tomoePredict",
   "devDependencies": {
     "wrangler": "^3.0.0"
   }
